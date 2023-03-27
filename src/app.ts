@@ -79,12 +79,14 @@ app.get("/products", async (req, res) => {
     if (currency) {
         try {
             const converter = new CC({ from: "USD", to: currency });
-            const productInfoWithCurrency = await productInfo.map(async product => {
-                return {
+            // convert the price without using Array.map
+            const productInfoWithCurrency = [];
+            for (const product of productInfo) {
+                productInfoWithCurrency.push({
                     ...product,
-                    price: await converter.convert(product.price)
-                }
-            })
+                    price: await converter.convert(product.price / 100)
+                });
+            }
             return res.json(productInfoWithCurrency);
         } catch (e) {
             return res.status(400).json({ error: "Invalid currency" });
