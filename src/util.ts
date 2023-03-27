@@ -8,7 +8,6 @@ export interface ProductInfo {
     images: string[];
     quality: "new" | "used";
     description: string;
-    available: number;
 }
 
 /**
