@@ -8,5 +8,6 @@
         "moduleResolution": "node16",
         "typeRoots": ["node_modules/@types"],
         "outDir": "dist",
+        "skipLibCheck": true
     }
 }

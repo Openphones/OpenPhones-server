@@ -2,27 +2,29 @@ import coinbase from "coinbase-commerce-node";
 import CC from "currency-converter-lt";
 import express from "express";
 import rateLimit from "express-rate-limit";
-import { readFileSync } from "fs";
-import { createServer } from "https";
-import { join } from "path";
+import { createServer } from "http";
 import { Stripe } from "stripe";
 import yup from "yup";
 import config from "./config.js";
 import productInfo from "./productInfo.js";
 import { verifyReq } from "./util.js";
-
 const stripeClient = new Stripe(config.StripePrivateKey, { apiVersion: "2022-11-15" });
 coinbase.Client.init(config.CoinbaseKey);
 
 const app = express();
-const server = createServer({
-    key: readFileSync(join("cert", "key.pem")),
-    cert: readFileSync(join("cert", "cert.pem")),
-    passphrase: config.CertPass
-}, app);
+const server = createServer(app);
 
 app.use(express.json());
 app.use(rateLimit({ max: 15 }));
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader(
+        "Access-Control-Allow-Methods",
+        "GET, POST"
+    );
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    next();
+})
 
 app.use((err, req, res, next) => {
     //@ts-ignore
@@ -34,7 +36,7 @@ app.use((err, req, res, next) => {
 
 const checkoutSchema = yup.object({
     body: yup.object({
-        type: yup.string().required().ensure().oneOf(["stripe", "coinbase"]),
+        type: yup.string().required().ensure().oneOf(["stripe"]),
         items: yup.array().of(yup.object({
             id: yup.string().required(),
             quantity: yup.number().required()
@@ -67,16 +69,21 @@ app.post("/create-checkout-session", verifyReq(checkoutSchema), async (req, res)
                 payment_method_types: ["card"],
                 mode: "payment",
                 line_items: products,
-                success_url: `https://${config.DomainName}:${config.ServerPort}/success.html`,
-                cancel_url: `https://${config.DomainName}:${config.ServerPort}/cancel.html`,
+                success_url: `https://${config.DomainName}/success/`,
+                cancel_url: `https://${config.DomainName}/cancel/`,
                 shipping_address_collection: {
                     allowed_countries: ["US"]
                 },
+                automatic_tax: {
+                    enabled: false
+                }
             });
 
             res.json({ url: session.url });
         }
 
+        // this code is totally busted atm, will have to sort it out later
+        /*
         if (req.body.type === "coinbase") {
             // calculate total price
             const totalPrice = rawProducts.reduce((acc, product) => {
@@ -85,22 +92,23 @@ app.post("/create-checkout-session", verifyReq(checkoutSchema), async (req, res)
                 return acc + realProduct.price * product.quantity;
             }, 0);
 
-            const chargeObj = new coinbase.resources.Charge({
-                name: "Openphones Order",
-                description: `Order for ${rawProducts.reduce((acc, curr) => acc + curr.quantity, 0)} items`,
+            const itemCount = rawProducts.reduce((acc, product) => acc + product.quantity, 0);
+            
+            const checkoutObj = new coinbase.resources.Checkout({
+                name: `Openphones Order for ${itemCount} item${itemCount === 1 ? "" : "s"}`,
+                description: rawProducts.map(product => `${product.quantity}x${product.id}`).join(", "),
                 pricing_type: "fixed_price",
                 local_price: {
                     amount: totalPrice.toString(),
                     currency: "USD"
                 },
-                redirect_url: `https://${config.DomainName}:${config.ServerPort}/success.html`,
-                cancel_url: `https://${config.DomainName}:${config.ServerPort}/cancel.html`
+                requested_info: ["email", "name"],
             });
 
-            const charge = await chargeObj.save();
+            const charge = await checkoutObj.save();
 
             res.json({ url: charge.hosted_url });
-        }
+        }*/
 
     } catch (e) {
         res.status(500).send({ error: e.message });

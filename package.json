@@ -4,6 +4,7 @@
         "currency-converter-lt": "2.0.0-beta.0",
         "express": "^4.18.2",
         "express-rate-limit": "^6.7.0",
+        "node-fetch": "^3.3.1",
         "stripe": "^11.16.0",
         "typescript": "^5.0.2",
         "yup": "^1.0.2"
@@ -25,13 +26,13 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/MesterMan03/Openphones.git"
+        "url": "git+https://github.com/Openphones/OpenPhones-server.git"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/MesterMan03/Openphones/issues"
+        "url": "https://github.com/Openphones/OpenPhones-server/issues"
     },
-    "homepage": "https://github.com/MesterMan03/Openphones#readme"
+    "homepage": "https://github.com/Openphones/OpenPhones-server#readme"
 }
