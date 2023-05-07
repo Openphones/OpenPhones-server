@@ -6,8 +6,15 @@ export interface ProductInfo {
     long_name: string;
     price: number;
     images: string[];
-    quality: "new" | "used";
+    quality: string;
     description: string;
+    stock: boolean;
+    overrides: OverrideData;
+}
+
+export interface OverrideData {
+    color: { name: string, color: string, readable: string }[];
+    storage: { size: number, name: string, price?: number, colorcomp?: string[] }[];
 }
 
 /**

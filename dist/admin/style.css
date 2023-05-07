@@ -1,0 +1,132 @@
+html,
+body {
+    margin: 0;
+}
+
+/* Make the header sticky and sort elements in a row */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+    align-items: center;
+    height: auto;
+    background-color: #aaa;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: #000;
+}
+
+dialog {
+    border-radius: 1rem;
+    border: none;
+    padding: 10px;
+
+    background-color: #959595;
+}
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+#loginform {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    padding: 10px;
+
+    border-radius: 1rem;
+
+    position: absolute;
+    top: 10px;
+    z-index: 9999;
+
+    background-color: #000;
+}
+
+/* Make h1 in the header smaller */
+header h1 {
+    font-size: 1.5rem;
+}
+
+h1,
+h2,
+h3,
+p {
+    margin: 0;
+}
+
+main {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#add {
+    width: fit-content;
+    margin: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#stock,
+#general {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.product,
+#addform {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    padding: 10px;
+    border-radius: 1rem;
+
+    /* add a shadow */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+    background-color: #5a5a5a;
+}
+
+#overrides {
+    border-radius: 10px;
+    padding: 5px;
+
+    background-color: #4a4a4a;
+}
+
+#description,
+#images {
+    min-height: 50px;
+    resize: vertical;
+}
+
+.product>.delete {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.product>h2 {
+    padding-bottom: 2px;
+    border-bottom: 2px salmon solid;
+}
+
+.product>.desc {
+    max-height: 5rem;
+    overflow-x: hidden;
+}
+
+input {
+    padding: 0;
+}
